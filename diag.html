@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Гавань — діагностика</title>
+<style>
+  body{margin:0;background:#0B1817;color:#F4EFE6;font-family:system-ui,-apple-system,sans-serif;padding:18px;line-height:1.5}
+  h1{font-size:19px;margin:0 0 4px}
+  p.s{font-size:13px;opacity:.65;margin:0 0 18px}
+  .row{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .t{font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin-bottom:5px}
+  .v{font-size:15px;font-weight:700;word-break:break-all}
+  .ok{color:#7BD2A6}.bad{color:#FF9C8F}.warn{color:#F0C674}
+  pre{background:rgba(0,0,0,.35);padding:10px;border-radius:8px;font-size:11px;overflow-x:auto;margin:8px 0 0;white-space:pre-wrap;word-break:break-all}
+  button{margin-top:14px;width:100%;padding:14px;font-size:15px;font-weight:700;color:#0B1817;background:#C29A57;border:none;border-radius:8px;cursor:pointer}
+  .hint{font-size:13px;opacity:.8;margin-top:16px;border-top:1px solid rgba(255,255,255,.12);padding-top:14px}
+</style></head>
+<body>
+  <h1>Діагностика синхронізації</h1>
+  <p class="s">Відкрийте цю сторінку на телефоні й надішліть скриншот.</p>
+  <div id="out">Перевіряю…</div>
+  <button onclick="location.reload()">Перевірити знову</button>
+  <div class="hint" id="hint"></div>
+
+<script>
+function row(t, v, cls, extra){
+  return '<div class="row"><div class="t">'+t+'</div><div class="v '+(cls||'')+'">'+v+'</div>'+(extra||'')+'</div>';
+}
+(async function(){
+  var html = '', hint = '', problems = [];
+
+  // 1. Чи є content.json на сервері
+  var cj = null, cjStatus = '—', cjSize = 0, cjErr = '';
+  try {
+    var r = await fetch('content.json?v=' + Date.now(), { cache: 'no-store' });
+    cjStatus = r.status;
+    if (r.ok) { var txt = await r.text(); cjSize = txt.length;
+      try { cj = JSON.parse(txt); } catch(e){ cjErr = 'файл пошкоджений: ' + e.message; }
+    }
+  } catch(e){ cjErr = e.message; }
+
+  if (cj) {
+    html += row('1. Файл content.json', 'Є на сервері ✓', 'ok',
+      '<pre>розмір: ' + Math.round(cjSize/1024) + ' КБ\nрозділи: ' + Object.keys(cj).join(', ') + '</pre>');
+  } else if (cjStatus === 404) {
+    html += row('1. Файл content.json', 'НЕ ЗНАЙДЕНО (404)', 'bad');
+    problems.push('Файл <b>content.json</b> не залитий у корінь репозиторію. Саме через нього зміни доходять до телефона: в адмінці натисніть <b>Опублікувати</b>, потім залийте отриманий файл на GitHub (Add file → Upload files → Commit).');
+  } else {
+    html += row('1. Файл content.json', 'Помилка: ' + cjStatus + ' ' + cjErr, 'bad');
+    problems.push('Файл є, але не читається: ' + (cjErr || cjStatus) + '. Спробуйте залити його заново.');
+  }
+
+  // 2. Чи новий content.js
+  var newLoader = false, cjsErr = '';
+  try {
+    var r2 = await fetch('content.js?v=' + Date.now(), { cache: 'no-store' });
+    if (r2.ok) { var src = await r2.text(); newLoader = src.indexOf('loadPublished') > -1 && src.indexOf('XMLHttpRequest') > -1; }
+    else cjsErr = 'статус ' + r2.status;
+  } catch(e){ cjsErr = e.message; }
+
+  if (newLoader) html += row('2. Файл content.js', 'Оновлена версія ✓', 'ok');
+  else {
+    html += row('2. Файл content.js', 'СТАРА версія' + (cjsErr ? ' (' + cjsErr + ')' : ''), 'bad');
+    problems.push('На сервері лежить <b>стара</b> версія content.js. Залийте новий файл content.js у корінь репозиторію.');
+  }
+
+  // 3. Що реально бачить телефон
+  var lsRaw = null;
+  try { lsRaw = localStorage.getItem('havan_site_content_v1'); } catch(e){}
+  html += row('3. Локальні дані в цьому браузері',
+    lsRaw ? 'Є (' + Math.round(lsRaw.length/1024) + ' КБ) — вони перекривають опубліковані' : 'Немає — сайт бере дані з content.json',
+    lsRaw ? 'warn' : 'ok');
+  if (lsRaw) problems.push('У цьому браузері збережені <b>власні</b> правки — вони показуються замість опублікованих. Якщо тестуєте телефон, відкрийте сайт у <b>приватному вікні</b>.');
+
+  // 4. Приклад значення
+  if (cj) {
+    var t = (cj.hero && cj.hero.title) || '—';
+    var ph = (cj.contacts && cj.contacts.phone) || '—';
+    html += row('4. Що записано в content.json',
+      'Заголовок: ' + t + '<br>Телефон: ' + ph, '',
+      '<pre>Порівняйте з тим, що бачите на сайті.\nЯкщо тут ваші нові значення, а на сайті старі —\nце кеш: відкрийте сайт у приватному вікні.</pre>');
+  }
+
+  document.getElementById('out').innerHTML = html;
+  document.getElementById('hint').innerHTML = problems.length
+    ? '<b>Що робити:</b><br>' + problems.map(function(p,i){ return (i+1)+'. '+p; }).join('<br><br>')
+    : '<b class="ok">Усе на місці.</b> Якщо сайт усе одно показує старе — це кеш браузера: відкрийте сайт у приватному вікні або зачекайте 2 хвилини.';
+})();
+</script>
+</body></html>
