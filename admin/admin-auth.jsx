@@ -5,8 +5,8 @@
 
 const AUTH_KEY = 'havan_admin_session_v1';
 // Пароль зберігається як SHA-256 хеш, а не відкритим текстом.
-const CREDS = { login: 'HavaN_KM', hash: null };   // hash підставляється нижче
-const PASSWORD_HASH = '94246ce346bbe6fb3db96c8176e76268a8642be5842ee76ba6b762253504c385'; // "admin"
+const CREDS = { login: 'HavaN_KM', hash: null };
+const PASSWORD_HASH = '1ee39bfd477d5edd21374ba2039a3cf1ffe75bed55f75277fa81515a23bff024';
 const SESSION_HOURS = 12;
 
 async function sha256(str) {
