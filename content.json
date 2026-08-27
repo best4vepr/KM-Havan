@@ -1,7 +1,7 @@
 {
   "hero": {
     "eyebrow": "Котеджне містечко Гавань",
-    "title": "Ваш власний берег",
+    "title": "Ваш власний берег1",
     "titleAccent": "Десни",
     "subtitle": "Сучасне котеджне містечко на березі річки Десна",
     "cta1": "Обрати ділянку",
@@ -20,7 +20,7 @@
         "label": "охорона та відеонагляд"
       }
     ],
-    "photo": "assets/photos/hero-desna.jpg"
+    "photo": "../assets/photos/hero-desna.jpg"
   },
   "amenities": {
     "eyebrow": "Чому Гавань",
@@ -28,34 +28,34 @@
     "lead": "Ми створили містечко, де природа, приватність і комфорт поєднані на березі річки.",
     "items": [
       {
-        "title": "Дім біля води",
+        "title": "Будинок біля води",
         "text": "Приватний берег на кожній ділянці першої лінії.",
-        "photo": "assets/photos/amenity-1.jpg"
+        "photo": "../assets/photos/amenity-1.jpg"
       },
       {
         "title": "Свій човен на ділянці",
         "text": "Паркуйте човен біля свого подвір’я.",
-        "photo": "assets/photos/amenity-2.jpg"
+        "photo": "../assets/photos/amenity-2.jpg"
       },
       {
         "title": "Власний пляж",
         "text": "Доглянутий піщаний пляж лише для мешканців містечка.",
-        "photo": "assets/photos/amenity-3.jpg"
+        "photo": "../assets/photos/amenity-3.jpg"
       },
       {
         "title": "Дитячий майданчик",
         "text": "Безпечний простір для ігор та відпочинку дітей.",
-        "photo": "assets/photos/amenity-4.jpg"
+        "photo": "../assets/photos/amenity-4.jpg"
       },
       {
         "title": "Футбольне поле",
         "text": "Власне поле для гри та активного дозвілля мешканців.",
-        "photo": "assets/photos/amenity-5.jpg"
+        "photo": "../assets/photos/amenity-5.jpg"
       },
       {
         "title": "Волейбольне поле",
         "text": "Майданчик для волейболу просто неба біля води.",
-        "photo": "assets/photos/amenity-6.jpg"
+        "photo": "../assets/photos/amenity-6.jpg"
       }
     ]
   },
@@ -66,42 +66,14 @@
     "cta": "Дізнатися більше",
     "realCount": 3,
     "photos": [
-      {
-        "src": "assets/photos/nq-1.jpg",
-        "cap": "Реальні фото нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-2.jpg",
-        "cap": "Реальні фото нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-3.jpg",
-        "cap": "Реальні фото нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-4.jpg",
-        "cap": "Візуалізація нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-5.jpg",
-        "cap": "Візуалізація нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-6.jpg",
-        "cap": "Візуалізація нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-7.jpg",
-        "cap": "Візуалізація нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-8.jpg",
-        "cap": "Візуалізація нового кварталу"
-      },
-      {
-        "src": "assets/photos/nq-9.jpg",
-        "cap": "Візуалізація нового кварталу"
-      }
+      "../assets/photos/nq-1.jpg",
+      "../assets/photos/nq-2.jpg",
+      "../assets/photos/nq-3.jpg",
+      "../assets/photos/nq-4.jpg",
+      "../assets/photos/nq-5.jpg",
+      "../assets/photos/nq-6.jpg",
+      "../assets/photos/nq-7.jpg",
+      "../assets/photos/nq-8.jpg"
     ]
   },
   "schemes": {
@@ -111,11 +83,11 @@
     "items": [
       {
         "cap": "Розташування на карті",
-        "src": "assets/havan-satellite-2.jpg"
+        "src": "../assets/havan-satellite-2.jpg"
       },
       {
         "cap": "Детальна схема ділянок",
-        "src": "assets/havan-genplan-2.jpg"
+        "src": "../assets/havan-genplan-2.jpg"
       }
     ]
   },
@@ -159,31 +131,31 @@
   "gallery": {
     "eyebrow": "Галерея",
     "title": "Погляньте на містечко з висоти",
-    "lead": "Реальні аерофото Гавані — річка, ділянки та благоустрій території.",
+    "lead": "Реальні аерофото КМ Гавань — річка, ділянки та благоустрій території.",
     "photos": [
       {
-        "src": "assets/photos/g-01.jpg",
-        "cap": "Панорама річки та ділянок"
+        "src": "../assets/photos/g-01.jpg",
+        "cap": "Панорама річки та ділянок, КМ Гавань"
       },
       {
-        "src": "assets/photos/g-02.jpg",
-        "cap": "Котеджі на березі водойми"
+        "src": "../assets/photos/g-02.jpg",
+        "cap": "Котеджі на березі затоки Десни, КМ Гавань"
       },
       {
-        "src": "assets/photos/g-03.jpg",
-        "cap": "Сучасна забудова біля води"
+        "src": "../assets/photos/g-03.jpg",
+        "cap": "Сучасна забудова біля води, КМ Гавань"
       },
       {
-        "src": "assets/photos/g-04.jpg",
-        "cap": "Вид на канал і набережну"
+        "src": "../assets/photos/g-04.jpg",
+        "cap": "Ділянки вздовж каналу р. Десна, КМ Гавань"
       },
       {
-        "src": "assets/photos/g-06.jpg",
-        "cap": "Ділянки вздовж каналу"
+        "src": "../assets/photos/g-06.jpg",
+        "cap": "Панорама котеджного містечка Гавань"
       },
       {
-        "src": "assets/photos/g-07.jpg",
-        "cap": "Містечко з висоти"
+        "src": "../assets/photos/g-07.jpg",
+        "cap": "Берег затоки з висоти, КМ Гавань"
       }
     ]
   },
@@ -202,8 +174,8 @@
     "instagram": "https://www.instagram.com/friends.town.mr/",
     "tiktok": "https://www.tiktok.com/@friends.town.mr",
     "officePhotos": [
-      "assets/photos/sales-office.jpg",
-      "assets/photos/sales-office-2.jpg"
+      "../assets/photos/sales-office.jpg",
+      "../assets/photos/sales-office-2.jpg"
     ]
   },
   "design": {
@@ -229,15 +201,12 @@
   "files": [
     {
       "name": "Генплан (супутник)",
-      "path": "assets/havan-satellite-2.jpg"
+      "path": "../assets/havan-satellite-2.jpg"
     },
     {
       "name": "Детальна схема ділянок",
-      "path": "assets/havan-genplan-2.jpg"
-    },
-    {
-      "name": "Схема PDF",
-      "path": "assets/havan-scheme.pdf"
+      "path": "../assets/havan-genplan-2.jpg"
     }
-  ]
+  ],
+  "_publishedAt": 1787836241353
 }
