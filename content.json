@@ -1,0 +1,243 @@
+{
+  "hero": {
+    "eyebrow": "Котеджне містечко Гавань",
+    "title": "Ваш власний берег",
+    "titleAccent": "Десни",
+    "subtitle": "Сучасне котеджне містечко на березі річки Десна",
+    "cta1": "Обрати ділянку",
+    "cta2": "Містечко з висоти",
+    "stats": [
+      {
+        "value": "На воді",
+        "label": "ділянки першої лінії"
+      },
+      {
+        "value": "Власний",
+        "label": "пляж · набережна · спуск човнів"
+      },
+      {
+        "value": "24/7",
+        "label": "охорона та відеонагляд"
+      }
+    ],
+    "photo": "assets/photos/hero-desna.jpg"
+  },
+  "amenities": {
+    "eyebrow": "Чому Гавань",
+    "title": "Все для життя біля води",
+    "lead": "Ми створили містечко, де природа, приватність і комфорт поєднані на березі річки.",
+    "items": [
+      {
+        "title": "Дім біля води",
+        "text": "Приватний берег на кожній ділянці першої лінії.",
+        "photo": "assets/photos/amenity-1.jpg"
+      },
+      {
+        "title": "Свій човен на ділянці",
+        "text": "Паркуйте човен біля свого подвір’я.",
+        "photo": "assets/photos/amenity-2.jpg"
+      },
+      {
+        "title": "Власний пляж",
+        "text": "Доглянутий піщаний пляж лише для мешканців містечка.",
+        "photo": "assets/photos/amenity-3.jpg"
+      },
+      {
+        "title": "Дитячий майданчик",
+        "text": "Безпечний простір для ігор та відпочинку дітей.",
+        "photo": "assets/photos/amenity-4.jpg"
+      },
+      {
+        "title": "Футбольне поле",
+        "text": "Власне поле для гри та активного дозвілля мешканців.",
+        "photo": "assets/photos/amenity-5.jpg"
+      },
+      {
+        "title": "Волейбольне поле",
+        "text": "Майданчик для волейболу просто неба біля води.",
+        "photo": "assets/photos/amenity-6.jpg"
+      }
+    ]
+  },
+  "newQuarter": {
+    "eyebrow": "Новий квартал",
+    "title": "Ми відкрили новий квартал на продаж",
+    "lead": "Ділянки з власним виходом на затоку Десни. Перша лінія води, простір і приватність — нова черга вже доступна для бронювання.",
+    "cta": "Дізнатися більше",
+    "realCount": 3,
+    "photos": [
+      {
+        "src": "assets/photos/nq-1.jpg",
+        "cap": "Реальні фото нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-2.jpg",
+        "cap": "Реальні фото нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-3.jpg",
+        "cap": "Реальні фото нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-4.jpg",
+        "cap": "Візуалізація нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-5.jpg",
+        "cap": "Візуалізація нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-6.jpg",
+        "cap": "Візуалізація нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-7.jpg",
+        "cap": "Візуалізація нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-8.jpg",
+        "cap": "Візуалізація нового кварталу"
+      },
+      {
+        "src": "assets/photos/nq-9.jpg",
+        "cap": "Візуалізація нового кварталу"
+      }
+    ]
+  },
+  "schemes": {
+    "eyebrow": "Генплан містечка",
+    "title": "Схема ділянок",
+    "lead": "Актуальна схема котеджного містечка.",
+    "items": [
+      {
+        "cap": "Розташування на карті",
+        "src": "assets/havan-satellite-2.jpg"
+      },
+      {
+        "cap": "Детальна схема ділянок",
+        "src": "assets/havan-genplan-2.jpg"
+      }
+    ]
+  },
+  "infrastructure": {
+    "eyebrow": "Інфраструктура та сервіс",
+    "title": "Містечко, яке про вас піклується",
+    "lead": "Власна служба експлуатації цілий рік підтримує комфорт і безпеку на території.",
+    "items": [
+      {
+        "icon": "Cable",
+        "title": "Готові комунікації",
+        "text": "Електрика, газ та оптоволокно до ділянки."
+      },
+      {
+        "icon": "Route",
+        "title": "Асфальтовані вулиці",
+        "text": "Зручний під’їзд у будь-яку погоду."
+      },
+      {
+        "icon": "ShieldCheck",
+        "title": "В’їзд по перепустках",
+        "text": "Закрита територія лише для мешканців і гостей."
+      },
+      {
+        "icon": "Lightbulb",
+        "title": "Освітлення вулиць",
+        "text": "Затишне вечірнє освітлення всіх вулиць."
+      },
+      {
+        "icon": "Wrench",
+        "title": "Обслуговування території",
+        "text": "Чищення доріг від снігу та регулярний вивіз сміття."
+      },
+      {
+        "icon": "Video",
+        "title": "Відеонагляд",
+        "text": "Цілодобове відеоспостереження по всій території."
+      }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "Галерея",
+    "title": "Погляньте на містечко з висоти",
+    "lead": "Реальні аерофото Гавані — річка, ділянки та благоустрій території.",
+    "photos": [
+      {
+        "src": "assets/photos/g-01.jpg",
+        "cap": "Панорама річки та ділянок"
+      },
+      {
+        "src": "assets/photos/g-02.jpg",
+        "cap": "Котеджі на березі водойми"
+      },
+      {
+        "src": "assets/photos/g-03.jpg",
+        "cap": "Сучасна забудова біля води"
+      },
+      {
+        "src": "assets/photos/g-04.jpg",
+        "cap": "Вид на канал і набережну"
+      },
+      {
+        "src": "assets/photos/g-06.jpg",
+        "cap": "Ділянки вздовж каналу"
+      },
+      {
+        "src": "assets/photos/g-07.jpg",
+        "cap": "Містечко з висоти"
+      }
+    ]
+  },
+  "contacts": {
+    "eyebrow": "Контакти",
+    "title": "Відділ продажу",
+    "phone": "+38 095 455 66 71",
+    "phoneRaw": "380954556671",
+    "hours": "Щодня з 9:00 до 20:00",
+    "address": "Київська обл., Вишгородський р-н, с. Новосілки, 14 км від Києва",
+    "googleRoute": "https://goo.gl/maps/Y7xNNyrsHFgYdYFZA",
+    "wazeRoute": "https://waze.com/ul/hu8vxz0t11",
+    "whatsapp": "https://wa.me/380954556671",
+    "telegram": "tg://resolve?domain=@best_4_vepr",
+    "viber": "viber://chat?number=%2B380954556671",
+    "instagram": "https://www.instagram.com/friends.town.mr/",
+    "tiktok": "https://www.tiktok.com/@friends.town.mr",
+    "officePhotos": [
+      "assets/photos/sales-office.jpg",
+      "assets/photos/sales-office-2.jpg"
+    ]
+  },
+  "design": {
+    "heroOverlay": 62,
+    "heroVignette": 55,
+    "heroSideShade": 78,
+    "heroHeight": 88,
+    "heroFocus": 32,
+    "amenityCardHeight": 340,
+    "amenityPerView": 3,
+    "nqAspect": "21/9",
+    "nqThumbW": 92,
+    "galleryHeight": 460,
+    "galleryThumbW": 104,
+    "schemeHeight": 520,
+    "schemeZoom": 4.5,
+    "officeHeight": 420,
+    "sectionSpacing": 100,
+    "contentWidth": 1200,
+    "cardRadius": 0,
+    "captionShade": 58
+  },
+  "files": [
+    {
+      "name": "Генплан (супутник)",
+      "path": "assets/havan-satellite-2.jpg"
+    },
+    {
+      "name": "Детальна схема ділянок",
+      "path": "assets/havan-genplan-2.jpg"
+    },
+    {
+      "name": "Схема PDF",
+      "path": "assets/havan-scheme.pdf"
+    }
+  ]
+}
