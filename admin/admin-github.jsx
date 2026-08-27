@@ -5,6 +5,24 @@
    Токен зберігається лише в цьому браузері (localStorage) і нікуди більше
    не надсилається, крім api.github.com. */
 
+function whyFetchFailed(err) {
+  let origin = '';
+  try { origin = location.origin || ''; } catch (e) {}
+  const onPages = /\.github\.io$/i.test((location && location.hostname) || '');
+  const isFile = /^file:/i.test(origin);
+  if (isFile) {
+    return 'Сторінка відкрита як локальний файл, тому браузер блокує запити до GitHub. '
+      + 'Відкрийте адмінку за адресою сайту (https://…github.io/…/admin/) — там усе працює.';
+  }
+  if (!onPages) {
+    return 'Запит заблоковано, бо адмінка відкрита не з адреси сайту (зараз: ' + (origin || 'невідомо') + '). '
+      + 'Відкрийте адмінку на самому сайті: https://<логін>.github.io/<репозиторій>/admin/ — і повторіть.';
+  }
+  return 'Запит до GitHub не пройшов (' + (err && err.message ? err.message : 'невідома причина') + '). '
+    + 'Найчастіше це блокувальник рекламы або розширення приватності — вимкніть його для цієї сторінки '
+    + 'чи спробуйте інший браузер / приватне вікно.';
+}
+
 const GH_KEY = 'havan_gh_cfg_v1';
 
 function loadGh() {
@@ -54,7 +72,7 @@ async function ghPublish(cfg, jsonText) {
       if (rr.status !== 200) return { ok: false, message: `Репозиторій ${owner}/${repo} не знайдено або токен не має до нього доступу.` };
     }
   } catch (e) {
-    return { ok: false, message: 'Немає зв\'язку з GitHub: ' + e.message };
+    return { ok: false, message: whyFetchFailed(e) };
   }
 
   // 2) коміт
@@ -98,7 +116,7 @@ async function ghCheck(cfg) {
     if (r.status === 401) return { ok: false, message: 'Токен недійсний.' };
     if (r.status === 404) return { ok: false, message: 'Репозиторій не знайдено (перевірте логін і назву).' };
     return { ok: false, message: 'Помилка ' + r.status };
-  } catch (e) { return { ok: false, message: 'Немає зв\'язку: ' + e.message }; }
+  } catch (e) { return { ok: false, message: whyFetchFailed(e) }; }
 }
 
 Object.assign(window, { GH_KEY, loadGh, saveGh, ghPublish, ghCheck });
