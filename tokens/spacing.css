@@ -1,0 +1,23 @@
+/* ─────────────────────────────────────────────────────────────
+   SPACING — 4px base, generous premium rhythm
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --sp-0:   0; /* @kind spacing */
+  --sp-1:   0.25rem;  /* 4  */
+  --sp-2:   0.5rem;   /* 8  */
+  --sp-3:   0.75rem;  /* 12 */
+  --sp-4:   1rem;     /* 16 */
+  --sp-5:   1.5rem;   /* 24 */
+  --sp-6:   2rem;     /* 32 */
+  --sp-7:   2.5rem;   /* 40 */
+  --sp-8:   3rem;     /* 48 */
+  --sp-9:   4rem;     /* 64 */
+  --sp-10:  5rem;     /* 80 */
+  --sp-12:  7.5rem;   /* 120 — section padding */
+
+  /* Layout */
+  --container:   1200px;
+  --container-wide: 1360px;
+  --gutter:      clamp(1.25rem, 4vw, 3rem); /* @kind spacing */
+  --section-y:   clamp(4rem, 9vw, 7.5rem); /* @kind spacing */
+}
