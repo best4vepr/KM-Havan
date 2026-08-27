@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="uk"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Гавань — котеджне містечко на Десні</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  html, body { margin: 0; background: #0B1817; }
+  /* ── Dark theme — remap semantic tokens locally (global DS tokens stay light) ── */
+  #app {
+    min-height: 100vh;
+    --surface-page:    #0B1817;
+    --surface-card:    #14302E;
+    --surface-sunken:  #0E2322;
+    --surface-raised:  #183A38;
+    --surface-inverse: #07110F;
+    --surface-accent:  #1A2E22;
+
+    --text-strong:     #F4EFE6;
+    --text-body:       #CAD4D0;
+    --text-muted:      #91A39E;
+    --text-faint:      #6C7D78;
+    --text-on-dark:    #F4EFE6;
+    --text-on-dark-mut:#9FC0BF;
+    --text-accent:     #DCB877;
+    --text-link:       #6FB9BC;
+
+    --border-subtle:   rgba(255,255,255,0.08);
+    --border-default:  rgba(255,255,255,0.14);
+    --border-strong:   rgba(255,255,255,0.26);
+
+    --primary:         #2C7A80;
+    --primary-hover:   #357F85;
+    --primary-soft:    rgba(78,151,156,0.16);
+    --primary-contrast:#06201F;
+
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-sm: 0 2px 10px rgba(0,0,0,0.38);
+    --shadow-md: 0 10px 30px rgba(0,0,0,0.45);
+    --shadow-lg: 0 20px 56px rgba(0,0,0,0.55);
+    --shadow-xl: 0 36px 90px rgba(0,0,0,0.62);
+    /* Rectangular geometry — square off all rounded shapes site-wide */
+    --r-xs: 0; --r-sm: 0; --r-md: 0; --r-lg: 0; --r-xl: 0; --r-2xl: 0; --r-pill: 0;
+    background: var(--surface-page);
+  }
+  /* ── Reveal on scroll — opacity+transform, gated by JS class so content stays visible without JS ── */
+  @media (prefers-reduced-motion: no-preference) {
+    #app.reveal-ready .reveal, #app.reveal-ready .hero-in {
+      opacity: 0; transform: translateY(34px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+    }
+    #app.reveal-ready .reveal.in, #app.reveal-ready .hero-in.in { opacity: 1; transform: none; }
+  }
+
+  /* ─────── Мобільна адаптація (inline-стилі перекриваються через !important) ─────── */
+  @media (max-width: 900px) {
+    #app .schemes-grid, #app .infra-grid, #app .infra-cards, #app .contact-grid, #app .foot-grid { grid-template-columns: 1fr !important; }
+    #app .infra-grid, #app .contact-grid { gap: var(--sp-7) !important; }
+  }
+  @media (max-width: 760px) {
+    #app .hdr { height: auto !important; padding-top: 12px !important; padding-bottom: 12px !important; flex-wrap: wrap !important; gap: 10px !important; }
+    #app .hdr-nav { display: none !important; }
+    #app .hdr-logo { height: 48px !important; }
+    #app .hdr-right { gap: 10px !important; }
+    #app .hero-stats { flex-wrap: wrap !important; gap: 22px 28px !important; margin-top: 32px !important; }
+    #app .hero-stats > div > div:first-child { font-size: 1.75rem !important; }
+    #app .nq-title { white-space: normal !important; font-size: 1.5rem !important; }
+    /* герой: менше вертикального простору, текст на всю ширину */
+    #app .hero-wrap { padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
+    #app .hero-in { max-width: 100% !important; }
+    #app h1 { font-size: 2.15rem !important; }
+    /* кнопки на всю ширину */
+    #app .hero-in button { flex: 1 1 100% !important; justify-content: center !important; }
+    /* картки інфраструктури щільніше */
+    #app .infra-cards > div { padding: var(--sp-4) !important; }
+  }
+  @media (max-width: 520px) {
+    #app h1 { font-size: 1.85rem !important; }
+    #app .hdr-phone { display: none !important; }
+    #app .hdr-logo { height: 42px !important; }
+  }
+  /* приберемо горизонтальний зсув на будь-якому екрані */
+  html, body { overflow-x: hidden; max-width: 100%; }
+  #app img, #app svg { max-width: 100%; }
+
+  /* ─── Гамбургер і компактний герой на телефоні ─── */
+  @media (max-width: 760px) {
+    #app .burger { display: flex !important; }
+    /* герой: різко менше вертикального простору */
+    #app .hero-wrap { padding-top: 24px !important; padding-bottom: 32px !important; gap: 24px !important; }
+    #app .hero-stats { margin-top: 26px !important; gap: 18px 24px !important; }
+    #app .hero-stats > div { flex: 1 1 42% !important; }
+    #app .hero-stats > div > div:last-child { font-size: 0.75rem !important; max-width: none !important; }
+    /* схеми: показати цілком, не обрізати */
+    #app .schemes-grid img { object-fit: contain !important; height: auto !important; max-height: 62vh !important; background: #fff; }
+    #app .schemes-grid > div > a { flex: none !important; }
+    /* галерея нижча */
+    #app #gallery [style*="height: 460px"], #app #new-quarter [style*="height: 460px"] { height: 300px !important; }
+  }
+  @media (max-width: 520px) {
+    #app .hero-wrap { padding-top: 18px !important; padding-bottom: 26px !important; }
+    #app .hero-stats > div > div:first-child { font-size: 1.5rem !important; }
+  }
+
+  @media (max-width: 760px) {
+    /* тап-цілі мінімум 44px */
+    #app .schemes-grid a, #app #gallery button, #app a[href^="tel"], #app a[href^="http"] { min-height: 44px; }
+    #app #gallery button[aria-label^="Фото"] { width: 74px !important; height: 48px !important; min-height: 48px !important; }
+    /* мініатюри нового кварталу — трохи більші під палець */
+    #app #new-quarter button[aria-label^="Фото"] { width: 74px !important; height: 48px !important; min-height: 48px !important; }
+    /* месенджери в ряд, з переносом */
+    #app #contact a[aria-label] { width: 52px !important; height: 52px !important; }
+  }
+</style></head>
+<body>
+  <div id="app"></div>
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="120" fill="#0C3B3E"/>
+      <path d="M30 64 Q42 56 54 64 T78 64 T90 64" stroke="#C29A57" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M36 76 Q47 69 58 76 T80 76" stroke="#87B8BB" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M42 87 Q51 81 60 87 T78 87" stroke="#DCEBEA" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="60" cy="44" r="9" fill="#C29A57"/>
+    </svg>
+  </template>
+  <script>
+    window.addEventListener('error', function (e) { window.__loadErr = e.filename || e.message || ''; });
+    window.addEventListener('load', function () {
+      setTimeout(async function () {
+        var app = document.getElementById('app');
+        if (!app || app.children.length > 0) return;
+        var need = ['ds-bundle.js','content.js','layout.jsx','sections.jsx','styles.css','tokens/colors.css','assets/photos/hero-desna.jpg','assets/logo-wordmark-light.svg'];
+        var rows = '';
+        for (var i = 0; i < need.length; i++) {
+          var ok = false, code = '—';
+          try { var r = await fetch(need[i], { cache: 'reload' }); ok = r.ok; code = r.status; } catch (err) { code = 'нема звʼязку'; }
+          rows += '<tr><td style="padding:6px 14px 6px 0;font-family:monospace;font-size:13px">' + need[i] + '</td><td style="padding:6px 0;font-weight:700;color:' + (ok ? '#7BD2A6' : '#FF9C8F') + '">' + (ok ? 'OK' : 'НЕ ЗНАЙДЕНО (' + code + ')') + '</td></tr>';
+        }
+        app.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;font-family:Manrope,sans-serif;color:#F4EFE6"><div style="max-width:620px"><h1 style="font-size:26px;margin:0 0 6px">Сторінка не завантажилась</h1><p style="opacity:.7;margin:0 0 20px;font-size:15px">Нижче — які файли сайт знайшов, а які ні. Залийте на GitHub ті, що позначені червоним.</p><table style="border-collapse:collapse;width:100%">' + rows + '</table>' + (window.__loadErr ? '<p style="opacity:.55;margin:18px 0 0;font-size:13px">Помилка: ' + window.__loadErr + '</p>' : '') + '</div></div>';
+      }, 1200);
+    });
+  </script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.js"></script>
+  <script src="ds-bundle.js?v=8"></script>
+  <script src="content.js?v=8"></script>
+  <script>
+    // Захист: якщо content.js не завантажився — сайт усе одно працює на початкових значеннях
+    window.cms = window.cms || function (p, fb) { return fb; };
+    window.cmsList = window.cmsList || function (p, fb) { return fb; };
+  </script>
+  <script type="text/babel" src="layout.jsx?v=8"></script>
+  <script type="text/babel" src="sections.jsx?v=8"></script>
+  <script type="text/babel">
+    function App() {
+      const [plot, setPlot] = React.useState(null);
+      const [submitted, setSubmitted] = React.useState(false);
+      const nav = (id) => {
+        if (id === 'top') return window.scrollTo({ top: 0, behavior: 'smooth' });
+        const el = document.getElementById(id);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 60;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      };
+      const requestFromModal = () => { setPlot(null); nav('contact'); };
+      return (
+        <React.Fragment>
+          <SiteHeader onNav={nav} />
+          <Hero onNav={nav} />
+          <Amenities />
+          <NewQuarter />
+          <Plots onOpen={setPlot} />
+          <Infrastructure />
+          <Gallery />
+          <Contact onSubmit={() => setSubmitted(true)} submitted={submitted} />
+          <SiteFooter onNav={nav} />
+          <PlotModal plot={plot} onClose={() => setPlot(null)} onRequest={requestFromModal} />
+        </React.Fragment>
+      );
+    }
+    (window.__cmsReady || Promise.resolve()).then(function () {
+      ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+    });
+    // Reveal text + photos on scroll (failsafe never leaves content hidden)
+    (function () {
+      const app = document.getElementById('app');
+      if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+      app.classList.add('reveal-ready');
+      const reveal = (el) => el.classList.add('in');
+      let io = null;
+      try {
+        io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { reveal(e.target); io.unobserve(e.target); } });
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      } catch (err) { /* no IO → failsafe reveals all */ }
+      const scan = () => {
+        const hero = app.querySelector('.hero-in:not(.in)');
+        if (hero) requestAnimationFrame(() => reveal(hero));
+        app.querySelectorAll('.reveal:not(.in)').forEach((el) => {
+          if (el.getBoundingClientRect().top < window.innerHeight * 0.88) reveal(el);
+          else if (io) io.observe(el); else reveal(el);
+        });
+      };
+      [50, 240, 600].forEach((t) => setTimeout(scan, t));
+      setTimeout(() => app.querySelectorAll('.reveal, .hero-in').forEach(reveal), 4000);
+    })();
+  </script>
+  </script>
+</body></html>
