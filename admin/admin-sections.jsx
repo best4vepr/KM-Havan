@@ -301,7 +301,22 @@ function FilesEditor({ c, up }) {
 
 /* ── Публікація на GitHub ── */
 function PublishEditor({ c }) {
-  const [cfg, setCfg] = React.useState(loadGh);
+  // Логін і назву репозиторію можна визначити з адреси сторінки:
+  // best4vepr.github.io/KM-Havan/admin/ → owner=best4vepr, repo=KM-Havan
+  const guessRepo = () => {
+    try {
+      const host = location.hostname || '';
+      const m = host.match(/^([^.]+)\.github\.io$/i);
+      const seg = (location.pathname || '').split('/').filter(Boolean);
+      return { owner: m ? m[1] : '', repo: (m && seg.length && seg[0] !== 'admin') ? seg[0] : '' };
+    } catch (e) { return { owner: '', repo: '' }; }
+  };
+  const [cfg, setCfg] = React.useState(() => {
+    const saved = loadGh();
+    if (saved.owner && saved.repo) return saved;
+    const g = guessRepo();
+    return { branch: 'main', path: 'content.json', ...saved, owner: saved.owner || g.owner, repo: saved.repo || g.repo };
+  });
   const [busy, setBusy] = React.useState('');
   const [msg, setMsg] = React.useState(null);
   const set = (k) => (v) => { const n = { ...cfg, [k]: v }; setCfg(n); saveGh(n); };
