@@ -321,9 +321,15 @@ function PublishEditor({ c }) {
   const [msg, setMsg] = React.useState(null);
   const set = (k) => (v) => { const n = { ...cfg, [k]: v }; setCfg(n); saveGh(n); };
 
+  const [diag, setDiag] = React.useState(null);
   const check = async () => {
-    setBusy('check'); setMsg(null);
+    setBusy('check'); setMsg(null); setDiag(null);
     setMsg(await ghCheck(cfg)); setBusy('');
+  };
+  const diagnose = async () => {
+    setBusy('diag'); setMsg(null); setDiag(null);
+    const r = await ghDiagnose(cfg);
+    setDiag(r); setBusy('');
   };
   const publish = async () => {
     setBusy('pub'); setMsg(null);
@@ -368,7 +374,24 @@ function PublishEditor({ c }) {
             <AIcon icon="UploadCloud" size={17} /> {busy === 'pub' ? 'Публікую…' : 'Опублікувати на сайт'}
           </button>
         </div>
+          <button onClick={diagnose} disabled={!!busy} style={{ ...ghostBtn, opacity: busy ? 0.6 : 1 }}>
+            <AIcon icon="Stethoscope" size={16} /> {busy === 'diag' ? 'Перевіряю…' : 'Діагностика зв\'язку'}
+          </button>
         {msg && box(msg)}
+        {diag && (
+          <div style={{ marginTop: 14, border: '1px solid var(--ink-100)', borderRadius: 10, overflow: 'hidden' }}>
+            {diag.steps.map((st, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px',
+                borderBottom: '1px solid var(--ink-100)', fontFamily: 'var(--font-sans)', fontSize: '0.875rem' }}>
+                <span style={{ color: st.ok ? 'var(--green-600)' : 'var(--red-600)', fontWeight: 700 }}>{st.ok ? '✓' : '✕'}</span>
+                <span style={{ color: 'var(--ink-700)' }}>{st.name}</span>
+                <span style={{ marginLeft: 'auto', color: 'var(--ink-400)', fontSize: '0.8125rem' }}>{st.note}</span>
+              </div>
+            ))}
+            <div style={{ padding: '12px 14px', background: 'var(--cream-100)', fontFamily: 'var(--font-sans)',
+              fontSize: '0.875rem', fontWeight: 600, color: 'var(--ink-800)', lineHeight: 1.55 }}>{diag.verdict}</div>
+          </div>
+        )}
       </Panel>
 
       <Panel title="Як отримати токен" desc="Одноразова дія, займає хвилину.">

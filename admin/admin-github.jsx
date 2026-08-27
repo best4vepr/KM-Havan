@@ -119,4 +119,56 @@ async function ghCheck(cfg) {
   } catch (e) { return { ok: false, message: whyFetchFailed(e) }; }
 }
 
-Object.assign(window, { GH_KEY, loadGh, saveGh, ghPublish, ghCheck });
+/** Поетапна перевірка: де саме обривається зв'язок. */
+async function ghDiagnose(cfg) {
+  const steps = [];
+  const push = (name, ok, note) => steps.push({ name, ok, note: note || '' });
+
+  // 1. Інтернет узагалі (простий запит без заголовків — без preflight)
+  try {
+    const r = await fetch('https://api.github.com/rate_limit', { cache: 'no-store' });
+    push('Доступ до api.github.com без токена', r.ok, 'статус ' + r.status);
+  } catch (e) {
+    push('Доступ до api.github.com без токена', false, e.message);
+    return { steps, verdict: 'GitHub недоступний навіть без токена — запити блокує браузер, розширення або мережа. '
+      + 'Спробуйте: приватне вікно, вимкнути блокувальник, інший браузер, інша мережа (напр. мобільний інтернет).' };
+  }
+
+  // 2. Той самий запит із заголовком Authorization (це вже інший тип запиту — з передперевіркою)
+  const token = (cfg.token || '').trim();
+  if (!token) { push('Запит із токеном', false, 'токен не введено'); return { steps, verdict: 'Введіть токен.' }; }
+  try {
+    const r = await fetch('https://api.github.com/rate_limit', {
+      cache: 'no-store',
+      headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' },
+    });
+    push('Запит із токеном', r.ok, 'статус ' + r.status);
+    if (r.status === 401) return { steps, verdict: 'Токен недійсний або скопійований не повністю. Створіть новий і скопіюйте рядок цілком.' };
+  } catch (e) {
+    push('Запит із токеном', false, e.message);
+    return { steps, verdict: 'Без токена GitHub відповідає, а з токеном — ні. Таке дає розширення приватності, '
+      + 'яке ріже заголовок авторизації. Відкрийте приватне вікно з вимкненими розширеннями або інший браузер.' };
+  }
+
+  // 3. Доступ саме до репозиторію
+  const owner = (cfg.owner || '').trim(), repo = (cfg.repo || '').trim();
+  try {
+    const r = await fetch('https://api.github.com/repos/' + owner + '/' + repo, {
+      cache: 'no-store',
+      headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' },
+    });
+    push('Доступ до ' + owner + '/' + repo, r.ok, 'статус ' + r.status);
+    if (r.status === 404) return { steps, verdict: 'Репозиторій не видно цим токеном. У налаштуваннях токена: Repository access → Only select repositories → виберіть ' + repo + '.' };
+    if (r.ok) {
+      const j = await r.json();
+      const can = j.permissions && (j.permissions.push || j.permissions.admin);
+      push('Право запису', !!can, can ? 'є' : 'немає');
+      return { steps, verdict: can ? 'Усе гаразд — можна публікувати.' : 'Токену не вистачає дозволу Contents: Read and write.' };
+    }
+  } catch (e) {
+    push('Доступ до репозиторію', false, e.message);
+  }
+  return { steps, verdict: 'Не вдалося завершити перевірку — надішліть цей список.' };
+}
+
+Object.assign(window, { ghDiagnose, GH_KEY, loadGh, saveGh, ghPublish, ghCheck });
