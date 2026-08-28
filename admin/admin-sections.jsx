@@ -140,7 +140,7 @@ function NewQuarterEditor({ c, up }) {
       <TextField label="Заголовок" value={n.title} onChange={(v) => up('newQuarter', { ...n, title: v })} />
       <TextField label="Опис" value={n.lead} multiline rows={3} onChange={(v) => up('newQuarter', { ...n, lead: v })} />
       <TextField label="Кнопка" value={n.cta} onChange={(v) => up('newQuarter', { ...n, cta: v })} />
-      <PhotoList label="Галерея кварталу" captions captionPlaceholder="Напр. Реальні фото нового кварталу"
+      <PhotoList prefix="nq" label="Галерея кварталу" captions captionPlaceholder="Напр. Реальні фото нового кварталу"
         note="Підпис показується на самому фото та у збільшеному перегляді. Порожній підпис — фото без плашки."
         photos={n.photos} onChange={(p) => up('newQuarter', { ...n, photos: p })} />
     </Panel>
@@ -163,7 +163,7 @@ function SchemesEditor({ c, up }) {
           {s.items.map((it, i) => (
             <div key={i} style={{ border: '1px solid var(--ink-100)', borderRadius: 10, padding: 12 }}>
               <TextField label={`Підпис ${i + 1}`} value={it.cap} onChange={(v) => setItem(i, 'cap', v)} />
-              <ImageField label="Зображення схеми" src={it.src} height={170} onChange={(v) => setItem(i, 'src', v)} />
+              <ImageField prefix="scheme" label="Зображення схеми" src={it.src} height={170} onChange={(v) => setItem(i, 'src', v)} />
               <div style={{ display: 'flex', gap: 6 }}>
                 <MiniBtn onClick={() => { const it2 = [...s.items]; if (i > 0) { [it2[i - 1], it2[i]] = [it2[i], it2[i - 1]]; up('schemes', { ...s, items: it2 }); } }} icon="ArrowLeft" title="Лівіше" />
                 <MiniBtn onClick={() => { const it2 = [...s.items]; if (i < it2.length - 1) { [it2[i + 1], it2[i]] = [it2[i], it2[i + 1]]; up('schemes', { ...s, items: it2 }); } }} icon="ArrowRight" title="Правіше" />
@@ -222,7 +222,7 @@ function GalleryEditor({ c, up }) {
       <TextField label="Надзаголовок" value={g.eyebrow} onChange={(v) => up('gallery', { ...g, eyebrow: v })} />
       <TextField label="Заголовок" value={g.title} onChange={(v) => up('gallery', { ...g, title: v })} />
       <TextField label="Опис" value={g.lead} multiline rows={2} onChange={(v) => up('gallery', { ...g, lead: v })} />
-      <PhotoList label="Фото галереї" captions captionPlaceholder="Напр. Панорама річки та ділянок"
+      <PhotoList prefix="g" label="Фото галереї" captions captionPlaceholder="Напр. Панорама річки та ділянок"
         note="Підпис показується на фото та у збільшеному перегляді."
         photos={g.photos} onChange={(p) => up('gallery', { ...g, photos: p })} />
     </Panel>
@@ -351,20 +351,14 @@ function PublishEditor({ c }) {
   return (
     <React.Fragment>
       <Panel title="Публікація прямо на сайт"
-        desc="Заповніть один раз — далі кнопка «Опублікувати на сайт» сама зберігатиме зміни в репозиторій. Завантажувати й заливати файли вручну більше не потрібно.">
-        <Row>
-          <TextField label="Ваш логін на GitHub" value={cfg.owner} onChange={set('owner')} hint="напр. ivan-petrenko" />
-          <TextField label="Назва репозиторію" value={cfg.repo} onChange={set('repo')} hint="напр. havan-site" />
-        </Row>
-        <Row>
-          <TextField label="Гілка" value={cfg.branch || 'main'} onChange={set('branch')} hint="зазвичай main" />
-          <TextField label="Назва файлу" value={cfg.path || 'content.json'} onChange={set('path')} hint="залиште content.json" />
-        </Row>
-        <TextField label="Токен доступу (Personal Access Token)" value={cfg.token} onChange={set('token')}
-          hint="Зберігається лише у цьому браузері. Нікуди не надсилається, крім GitHub." />
+        desc="Заповніть один раз — далі кнопка «Опублікувати» сама зберігає зміни на сайт: і текст, і фото.">
+        <TextField label="Адреса сервісу публікації" value={cfg.worker} onChange={set('worker')}
+          hint="напр. havan-publish.ваш-логін.workers.dev — має відкриватися у браузері" />
+        <TextField label="Ключ сервісу" value={cfg.adminKey} onChange={set('adminKey')}
+          hint="той самий рядок, що ви задали у змінній ADMIN_KEY у Cloudflare" />
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 4 }}>
           <button onClick={check} disabled={!!busy} style={{ ...ghostBtn, opacity: busy ? 0.6 : 1 }}>
-            <AIcon icon="Plug" size={16} /> {busy === 'check' ? 'Перевіряю…' : 'Перевірити зв\'язок'}
+            <AIcon icon="Plug" size={16} /> {busy === 'check' ? 'Перевіряю…' : 'Перевірити звʼязок'}
           </button>
           <button onClick={publish} disabled={!!busy} style={{
             display: 'inline-flex', alignItems: 'center', gap: 8, cursor: busy ? 'default' : 'pointer',
@@ -373,10 +367,10 @@ function PublishEditor({ c }) {
           }}>
             <AIcon icon="UploadCloud" size={17} /> {busy === 'pub' ? 'Публікую…' : 'Опублікувати на сайт'}
           </button>
-        </div>
           <button onClick={diagnose} disabled={!!busy} style={{ ...ghostBtn, opacity: busy ? 0.6 : 1 }}>
-            <AIcon icon="Stethoscope" size={16} /> {busy === 'diag' ? 'Перевіряю…' : 'Діагностика зв\'язку'}
+            <AIcon icon="Stethoscope" size={16} /> {busy === 'diag' ? 'Перевіряю…' : 'Діагностика звʼязку'}
           </button>
+        </div>
         {msg && box(msg)}
         {diag && (
           <div style={{ marginTop: 14, border: '1px solid var(--ink-100)', borderRadius: 10, overflow: 'hidden' }}>
@@ -394,18 +388,25 @@ function PublishEditor({ c }) {
         )}
       </Panel>
 
-      <Panel title="Як отримати токен" desc="Одноразова дія, займає хвилину.">
+      <Panel title="Як налаштувати сервіс публікації" desc="Одноразова дія, приблизно 10 хвилин.">
         <ol style={{ fontFamily: 'var(--font-sans)', fontSize: '0.9375rem', color: 'var(--ink-700)', lineHeight: 1.8, paddingLeft: 22, margin: 0 }}>
-          <li>Відкрийте <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens</a></li>
-          <li><b>Token name</b> — будь-яка назва, напр. «Гавань адмінка»</li>
-          <li><b>Expiration</b> — оберіть термін (напр. 1 рік)</li>
-          <li><b>Repository access</b> → <b>Only select repositories</b> → виберіть свій репозиторій сайту</li>
-          <li><b>Permissions</b> → <b>Repository permissions</b> → знайдіть <b>Contents</b> → поставте <b>Read and write</b></li>
-          <li><b>Generate token</b> → скопіюйте рядок, що починається з <code>github_pat_</code></li>
-          <li>Вставте його в поле «Токен доступу» вище</li>
+          <li>Зареєструйтесь на <a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener">dash.cloudflare.com</a> (безкоштовно)</li>
+          <li>У меню злева: <b>Compute (Workers)</b> → <b>Create</b> → <b>Start with Hello World</b> → назва <code>havan-publish</code> → <b>Deploy</b></li>
+          <li><b>Edit code</b> → видаліть увесь код → вставте вміст файлу <b>worker.js</b> (він у папці, яку я надіслав) → <b>Deploy</b></li>
+          <li>Відкрийте <b>Settings</b> → <b>Variables and Secrets</b> → додайте пʼять записів:
+            <ul style={{ margin: '8px 0', paddingLeft: 20 }}>
+              <li><b>GH_TOKEN</b> (Secret) — токен GitHub із дозволом Contents: Read and write</li>
+              <li><b>ADMIN_KEY</b> (Secret) — придумайте довгий рядок-пароль</li>
+              <li><b>GH_OWNER</b> (Text) — ваш логін на GitHub</li>
+              <li><b>GH_REPO</b> (Text) — назва репозиторію сайту</li>
+              <li><b>GH_BRANCH</b> (Text) — <code>main</code></li>
+            </ul>
+          </li>
+          <li>Скопіюйте адресу воркера (вигляду <code>havan-publish.логін.workers.dev</code>) і вставте у поле вище разом із ключем <b>ADMIN_KEY</b></li>
+          <li><b>«Перевірити звʼязок»</b> — має зʼявитися зелене повідомлення</li>
         </ol>
         <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8125rem', color: 'var(--ink-500)', lineHeight: 1.6, marginTop: 16 }}>
-          Токен — це пароль для запису у ваш репозиторій. Він зберігається лише в цьому браузері. Не вставляйте його на чужих комп'ютерах і не показуйте на скриншотах. Якщо токен випадково розкрито — видаліть його на GitHub і створіть новий.
+          Токен GitHub зберігається у Cloudflare, а не у браузері — це надійніше. Ключ сервісу зберігається лише в цьому браузері.
         </p>
       </Panel>
     </React.Fragment>

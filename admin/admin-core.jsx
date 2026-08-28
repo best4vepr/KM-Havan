@@ -199,9 +199,54 @@ function TextField({ label, value, onChange, multiline, rows = 3, hint }) {
   );
 }
 
-function ImageField({ label, src, onChange, onRemove, height = 128 }) {
+/** Зменшує фото до вебового розміру (щоб репозиторій не роздувався). */
+async function shrinkImage(file, maxW, quality) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => {
+      const im = new Image();
+      im.onload = () => res(im); im.onerror = rej; im.src = url;
+    });
+    const scale = Math.min(1, (maxW || 1700) / img.width);
+    const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, w, h);
+    return c.toDataURL('image/jpeg', quality || 0.82);
+  } finally { URL.revokeObjectURL(url); }
+}
+
+/** Ім'я файлу в репозиторії: якщо фото вже лежить там — залишаємо ту саму назву. */
+function repoNameFor(currentSrc, prefix) {
+  if (typeof currentSrc === 'string') {
+    const m = currentSrc.match(/([A-Za-z0-9._-]+)\.(?:jpe?g|png|webp)$/i);
+    if (m && !currentSrc.startsWith('data:')) return m[1] + '.jpg';
+  }
+  const stamp = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  return (prefix || 'photo') + '-' + stamp + '.jpg';
+}
+
+/** Готує й вантажить фото. Повертає шлях у репозиторії або data-URL (як запас). */
+async function prepAndUpload(file, currentSrc, prefix, onStatus) {
+  const dataUrl = await shrinkImage(file, 1700, 0.82);
+  const cfg = (typeof loadGh === 'function') ? loadGh() : {};
+  if (!cfg.worker || !cfg.adminKey || typeof ghUploadPhoto !== 'function') {
+    return { path: dataUrl, uploaded: false };
+  }
+  const name = repoNameFor(currentSrc, prefix);
+  const path = 'assets/photos/' + name;
+  if (onStatus) onStatus('Завантажую…');
+  const res = await ghUploadPhoto(cfg, path, dataUrl);
+  if (onStatus) onStatus(res.ok ? '' : res.message);
+  return res.ok ? { path, uploaded: true } : { path: dataUrl, uploaded: false, error: res.message };
+}
+
+function ImageField({ label, src, onChange, onRemove, height = 128, prefix }) {
   const [over, setOver] = React.useState(false);
   const [bad, setBad] = React.useState(false);
+  const [status, setStatus] = React.useState('');
   const ref = React.useRef(null);
   React.useEffect(() => {
     setBad(false);
@@ -211,11 +256,17 @@ function ImageField({ label, src, onChange, onRemove, height = 128 }) {
     probe.src = src;
   }, [src]);
   const shown = src && !bad ? src : null;
-  const read = (file) => {
+  const read = async (file) => {
     if (!file || !file.type.startsWith('image')) return;
-    const fr = new FileReader();
-    fr.onload = () => onChange(fr.result);
-    fr.readAsDataURL(file);
+    setStatus('Обробляю…');
+    try {
+      const res = await prepAndUpload(file, src, prefix, setStatus);
+      onChange(res.path);
+      setStatus(res.uploaded ? 'Завантажено у репозиторій ✓' : (res.error || 'Збережено локально'));
+      setTimeout(() => setStatus(''), 3200);
+    } catch (e) {
+      setStatus('Помилка: ' + e.message);
+    }
   };
   return (
     <div style={{ marginBottom: 16 }}>
@@ -250,11 +301,17 @@ function ImageField({ label, src, onChange, onRemove, height = 128 }) {
         )}
         <input ref={ref} type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => read(e.target.files[0])} />
       </div>
+      {status && (
+        <div style={{ fontFamily: 'var(--font-sans)', fontSize: '0.75rem', fontWeight: 600, marginTop: 5,
+          color: status.indexOf('✓') > -1 ? 'var(--green-600)' : (status.indexOf('Помилка') > -1 ? 'var(--red-600)' : 'var(--ink-500)') }}>
+          {status}
+        </div>
+      )}
     </div>
   );
 }
 
-function PhotoList({ label, photos, onChange, note, captions = false, captionPlaceholder = 'Підпис на фото' }) {
+function PhotoList({ label, photos, onChange, note, captions = false, captionPlaceholder = 'Підпис на фото', prefix }) {
   // Фото може бути рядком (лише шлях) або об'єктом { src, cap }.
   const srcOf = (p) => (typeof p === 'string' ? p : (p && p.src) || '');
   const capOf = (p) => (typeof p === 'string' ? '' : (p && p.cap) || '');
@@ -276,7 +333,7 @@ function PhotoList({ label, photos, onChange, note, captions = false, captionPla
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
         {photos.map((p, i) => (
           <div key={i} style={{ border: '1px solid var(--ink-100)', borderRadius: 10, padding: 8, background: '#fff' }}>
-            <ImageField src={srcOf(p)} onChange={(v) => setSrc(i, v)} height={104} />
+            <ImageField prefix={prefix} src={srcOf(p)} onChange={(v) => setSrc(i, v)} height={104} />
             {captions && (
               <input type="text" value={capOf(p)} placeholder={captionPlaceholder}
                 onChange={(e) => setCap(i, e.target.value)}
